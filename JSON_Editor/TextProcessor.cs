@@ -22,6 +22,34 @@ namespace JSON_Editor
 
     static class TextProcessor
     {
+        private static bool isSomethingLikeKey(ref int index, string text)
+        {
+            //check if there is anytihing 
+            // anything like key
+            char ch = '\0';
+            do
+            {
+                ++index;
+                ch = text[index];
+                if (ch == ' '
+                    || ch == '\r'
+                    || ch == '\n')
+                {
+                    continue;
+                }
+                else
+                if (ch == '"')
+                {
+                    --index;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            } while (true);
+        }
+
         public static ValidationResult isValidJson(string text)
         {
             Stack<char> stack = new Stack<char>();
@@ -128,14 +156,25 @@ namespace JSON_Editor
                         if (':' == last)
                         {
                             stack.Pop();
-                        }
-                        else
+                            
+                            if (!isSomethingLikeKey(ref i, text))
+                            {
+                                return result;
+                            }
+                        } else
                         {
                             stack.Push(ch);
                         }
+
                         break;
                     case '{':
-                        stack.Push(ch);
+                        if (isSomethingLikeKey(ref i, text))
+                        {
+                            stack.Push(ch);
+                        } else
+                        {
+                            return result;
+                        }
                         break;
                     case '}':
                         if (stack.Count == 0)
