@@ -127,7 +127,10 @@ namespace JSON_Editor
                 tb.BorderStyle = BorderStyle.Fixed3D;
                 //tb.VirtualSpace = true;
                 tb.LeftPadding = 17;
+
                 tb.Language = Language.JSON;
+                tb.SyntaxHighlighter = new JsonSyntaxHighlighter(tb);
+
                 tb.AddStyle(sameWordsStyle);//same words style
                 var tab = new FATabStripItem(fileName!=null?Path.GetFileName(fileName):"[new]", tb);
                 tab.Tag = fileName;
@@ -142,7 +145,6 @@ namespace JSON_Editor
                 tb.TextChangedDelayed += new EventHandler<TextChangedEventArgs>(tb_TextChangedDelayed);
                 tb.SelectionChangedDelayed += new EventHandler(tb_SelectionChangedDelayed);
                 tb.KeyDown += new KeyEventHandler(tb_KeyDown);
-//                tb.MouseMove += new MouseEventHandler(tb_MouseMove);
                 tb.ChangedLineColor = changedLineColor;
                 tb.HighlightingRangeType = HighlightingRangeType.VisibleRange;
                 //create autocomplete popup menu
