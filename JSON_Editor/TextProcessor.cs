@@ -91,6 +91,32 @@ namespace JSON_Editor
                         if ('"' != last)
                         {
                             stack.Push(ch);
+
+                            //check if there is anytihing 
+                            // anything like value
+                            do
+                            {
+                                ++i;
+                                ch = text[i];
+                                if (ch == ' ')
+                                {
+                                    continue;
+                                } else 
+                                if (ch == 'n'
+                                    || ch == 't'
+                                    || ch == 'f'
+                                    || ch == '"'
+                                    || ch == '{'
+                                    || ch == '['
+                                    || Char.IsDigit(ch))
+                                {
+                                    break;
+                                } else
+                                {
+                                    return result;
+                                }
+                            } while (ch == ' ');
+                            --i;
                         }
                         break;
                     case ',':
