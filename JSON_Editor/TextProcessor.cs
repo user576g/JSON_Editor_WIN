@@ -32,8 +32,10 @@ namespace JSON_Editor
 
             char last = '\0';
 
-            foreach (char ch in text)
+            for (int i = 0; i < text.Length; ++i)
             {
+                char ch = text[i];
+
                 // ignore symbols in double quotes
                 if (stack.Count != 0
                         && '"' == stack.Peek()
@@ -43,7 +45,22 @@ namespace JSON_Editor
                     ++result.At;
                     continue;
                 }  else if (Char.IsLetter(ch)) {
-                    return result;
+                    //keywords can be without quotes
+                    if (text.Substring(i, 4) == "null"
+                        || text.Substring(i, 4) == "true")
+                    {
+                        i += 3;
+                        continue;
+                    }
+                    else if (text.Substring(i, 5) == "false")
+                    {
+                        i += 4;
+                        continue;
+                    }
+                    else
+                    {
+                        return result;
+                    }
                 }
 
                 switch (ch)
