@@ -64,7 +64,11 @@ namespace JSON_Editor
 
             selectAllToolStripMenuItem.Click += (s, e) => CurrentTB.Selection.SelectAll();
 
-            EventHandler newFileHndl = (s, e) => CreateTab(null);
+            EventHandler newFileHndl = (s, e) =>
+            {
+                CreateTab(null);
+                lbStatusStrip.Text = "New empy file.";
+            };
             newToolStripMenuItem.Click += newFileHndl;
             newToolStripButton.Click += newFileHndl;
             
