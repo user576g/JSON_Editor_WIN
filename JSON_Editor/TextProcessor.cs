@@ -161,7 +161,7 @@ namespace JSON_Editor
 
         public static LinesNumbersResult CountLinesWords(string text)
         {
-            char[] separators = { ' ', ',', '.', '!', '?', ':',
+            char[] separators = { ' ', ',', '.', '!', '?', ':', '{', '}',
                                     ';', ')', '(', '[', ']', '\n', '\r'};
 
             LinesNumbersResult result = new LinesNumbersResult();
