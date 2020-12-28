@@ -50,46 +50,27 @@ namespace JSON_Editor
 
             tsbVerify.Click += TsbVerify_Click;
             
-            cutToolStripMenuItem.Click += CutToolStripButton_Click;
-            cutToolStripButton.Click += CutToolStripButton_Click; 
+            EventHandler cutHndl = (s, e) => CurrentTB.Cut();
+            cutToolStripMenuItem.Click += cutHndl;
+            cutToolStripButton.Click += cutHndl;
 
-            copyToolStripMenuItem.Click += CopyToolStripButton_Click;
-            copyToolStripButton.Click += CopyToolStripButton_Click;
+            EventHandler copyHndl = (s, e) => CurrentTB.Copy();
+            copyToolStripMenuItem.Click += copyHndl;
+            copyToolStripButton.Click += copyHndl;
 
-            pasteToolStripMenuItem.Click += PasteToolStripButton_Click;
-            pasteToolStripButton.Click += PasteToolStripButton_Click;
+            EventHandler pasteHndl = (s, e) => CurrentTB.Paste();
+            pasteToolStripMenuItem.Click += pasteHndl;
+            pasteToolStripButton.Click += pasteHndl;
 
             selectAllToolStripMenuItem.Click += (s, e) => CurrentTB.Selection.SelectAll();
 
-            newToolStripMenuItem.Click += NewToolStripButton_Click;
-            newToolStripButton.Click += NewToolStripButton_Click;
+            EventHandler newFileHndl = (s, e) => CreateTab(null);
+            newToolStripMenuItem.Click += newFileHndl;
+            newToolStripButton.Click += newFileHndl;
             
             quitToolStripMenuItem.Click += (s, e) => Close();
             findToolStripMenuItem.Click += (s, e) => CurrentTB.ShowFindDialog();
             replaceToolStripMenuItem.Click += (s, e) => CurrentTB.ShowReplaceDialog();
-            
-
-
-        }
-
-        private void NewToolStripButton_Click(object sender, EventArgs e)
-        {
-            CreateTab(null);
-        }
-
-        private void PasteToolStripButton_Click(object sender, EventArgs e)
-        {
-            CurrentTB.Paste();
-        }
-
-        private void CopyToolStripButton_Click(object sender, EventArgs e)
-        {
-            CurrentTB.Copy();
-        }
-
-        private void CutToolStripButton_Click(object sender, EventArgs e)
-        {
-            CurrentTB.Cut();
         }
 
         private void TsbVerify_Click(object sender, EventArgs e)
