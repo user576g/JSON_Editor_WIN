@@ -49,7 +49,47 @@ namespace JSON_Editor
             saveToolStripMenuItem.Text = "&Save";
 
             tsbVerify.Click += TsbVerify_Click;
+            
+            cutToolStripMenuItem.Click += CutToolStripButton_Click;
+            cutToolStripButton.Click += CutToolStripButton_Click; 
 
+            copyToolStripMenuItem.Click += CopyToolStripButton_Click;
+            copyToolStripButton.Click += CopyToolStripButton_Click;
+
+            pasteToolStripMenuItem.Click += PasteToolStripButton_Click;
+            pasteToolStripButton.Click += PasteToolStripButton_Click;
+
+            selectAllToolStripMenuItem.Click += (s, e) => CurrentTB.Selection.SelectAll();
+
+            newToolStripMenuItem.Click += NewToolStripButton_Click;
+            newToolStripButton.Click += NewToolStripButton_Click;
+            
+            quitToolStripMenuItem.Click += (s, e) => Close();
+            findToolStripMenuItem.Click += (s, e) => CurrentTB.ShowFindDialog();
+            replaceToolStripMenuItem.Click += (s, e) => CurrentTB.ShowReplaceDialog();
+            
+
+
+        }
+
+        private void NewToolStripButton_Click(object sender, EventArgs e)
+        {
+            CreateTab(null);
+        }
+
+        private void PasteToolStripButton_Click(object sender, EventArgs e)
+        {
+            CurrentTB.Paste();
+        }
+
+        private void CopyToolStripButton_Click(object sender, EventArgs e)
+        {
+            CurrentTB.Copy();
+        }
+
+        private void CutToolStripButton_Click(object sender, EventArgs e)
+        {
+            CurrentTB.Cut();
         }
 
         private void TsbVerify_Click(object sender, EventArgs e)
@@ -90,11 +130,6 @@ namespace JSON_Editor
             
             MessageBox.Show(this, sb.ToString(), "Validation result",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void newToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CreateTab(null);
         }
 
         private Style sameWordsStyle 
@@ -296,11 +331,6 @@ namespace JSON_Editor
             }
         }
 
-        private void quitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (ofdMain.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -324,26 +354,6 @@ namespace JSON_Editor
                 tsFiles.SelectedItem = (value.Parent as FATabStripItem);
                 value.Focus();
             }
-        }
-
-        private void cutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CurrentTB.Cut();
-        }
-
-        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CurrentTB.Copy();
-        }
-
-        private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CurrentTB.Paste();
-        }
-
-        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CurrentTB.Selection.SelectAll();
         }
 
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -411,16 +421,6 @@ namespace JSON_Editor
             }
             else
                 tbFindChanged = true;
-        }
-
-        private void findToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CurrentTB.ShowFindDialog();
-        }
-
-        private void replaceToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CurrentTB.ShowReplaceDialog();
         }
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
