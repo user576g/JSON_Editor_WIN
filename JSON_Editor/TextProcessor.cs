@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace JSON_Editor
 {
@@ -33,8 +34,6 @@ namespace JSON_Editor
 
             foreach (char ch in text)
             {
-//                char ch = ch.toLatin1();
-
                 // ignore symbols in double quotes
                 if (stack.Count != 0
                         && '"' == stack.Peek()
@@ -43,6 +42,8 @@ namespace JSON_Editor
                 {
                     ++result.At;
                     continue;
+                }  else if (Char.IsLetter(ch)) {
+                    return result;
                 }
 
                 switch (ch)
