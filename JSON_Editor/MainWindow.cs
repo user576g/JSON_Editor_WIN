@@ -184,19 +184,7 @@ namespace JSON_Editor
         }
 
         void tb_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Modifiers == Keys.Control && e.KeyCode == Keys.OemMinus)
-            {
-                NavigateBackward();
-                e.Handled = true;
-            }
-
-            if (e.Modifiers == (Keys.Control|Keys.Shift) && e.KeyCode == Keys.OemMinus)
-            {
-                NavigateForward();
-                e.Handled = true;
-            }
-
+        {      
             if (e.KeyData == (Keys.K | Keys.Control))
             {
                 //forced show (MinFragmentLength will be ignored)
@@ -439,66 +427,6 @@ namespace JSON_Editor
         }
 
         DateTime lastNavigatedDateTime = DateTime.Now;
-
-        private bool NavigateBackward()
-        {
-            DateTime max = new DateTime();
-            int iLine = -1;
-            FastColoredTextBox tb = null;
-            for (int iTab = 0; iTab < tsFiles.Items.Count; iTab++)
-            {
-                var t = (tsFiles.Items[iTab].Controls[0] as FastColoredTextBox);
-                for (int i = 0; i < t.LinesCount; i++)
-                    if (t[i].LastVisit < lastNavigatedDateTime && t[i].LastVisit > max)
-                    {
-                        max = t[i].LastVisit;
-                        iLine = i;
-                        tb = t;
-                    }
-            }
-            if (iLine >= 0)
-            {
-                tsFiles.SelectedItem = (tb.Parent as FATabStripItem);
-                tb.Navigate(iLine);
-                lastNavigatedDateTime = tb[iLine].LastVisit;
-                Console.WriteLine("Backward: " + lastNavigatedDateTime);
-                tb.Focus();
-                tb.Invalidate();
-                return true;
-            }
-            else
-                return false;
-        }
-
-        private bool NavigateForward()
-        {
-            DateTime min = DateTime.Now;
-            int iLine = -1;
-            FastColoredTextBox tb = null;
-            for (int iTab = 0; iTab < tsFiles.Items.Count; iTab++)
-            {
-                var t = (tsFiles.Items[iTab].Controls[0] as FastColoredTextBox);
-                for (int i = 0; i < t.LinesCount; i++)
-                    if (t[i].LastVisit > lastNavigatedDateTime && t[i].LastVisit < min)
-                    {
-                        min = t[i].LastVisit;
-                        iLine = i;
-                        tb = t;
-                    }
-            }
-            if (iLine >= 0)
-            {
-                tsFiles.SelectedItem = (tb.Parent as FATabStripItem);
-                tb.Navigate(iLine);
-                lastNavigatedDateTime = tb[iLine].LastVisit;
-                Console.WriteLine("Forward: " + lastNavigatedDateTime);
-                tb.Focus();
-                tb.Invalidate();
-                return true;
-            }
-            else
-                return false;
-        }
 
         /// <summary>
         /// This item appears when any part of snippet text is typed
