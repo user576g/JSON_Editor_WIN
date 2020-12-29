@@ -69,7 +69,7 @@
     </Compile>
     <Compile Include="TextProcessor.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
@@ -94,7 +94,11 @@
     <None Include="Resources\btZoom.Image.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\check.ico" />
     <None Include="Resources\validate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\blank.Image.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

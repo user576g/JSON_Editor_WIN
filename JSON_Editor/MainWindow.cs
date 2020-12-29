@@ -15,7 +15,9 @@ namespace JSON_Editor
 {
     public partial class MainWindow : Form
     {
-        Color changedLineColor = Color.FromArgb(255, 230, 230, 255);
+        private Color changedLineColor = Color.FromArgb(255, 230, 230, 255);
+        private Image blankImg = Properties.Resources.blank_Image;
+        private Image checkImg = Properties.Resources.check_ico.ToBitmap();
 
         public MainWindow()
         {
@@ -75,6 +77,11 @@ namespace JSON_Editor
             quitToolStripMenuItem.Click += (s, e) => Close();
             findToolStripMenuItem.Click += (s, e) => CurrentTB.ShowFindDialog();
             replaceToolStripMenuItem.Click += (s, e) => CurrentTB.ShowReplaceDialog();
+
+            tsBtnKeysOnly.CheckOnClick = true;
+            tsBtnKeysOnly.Image = blankImg;
+            tsBtnKeysOnly.CheckedChanged += (s, e) =>
+                tsBtnKeysOnly.Image = tsBtnKeysOnly.Checked ? checkImg : blankImg;
         }
 
         private void TsbVerify_Click(object sender, EventArgs e)
@@ -423,13 +430,28 @@ namespace JSON_Editor
                 tbFindChanged = false;
                 r.End = new Place(CurrentTB[CurrentTB.LinesCount - 1].Count, CurrentTB.LinesCount - 1);
                 var pattern = Regex.Escape(tbFind.Text);
-                foreach (var found in r.GetRanges(pattern))
+                if (tsBtnKeysOnly.Checked)
                 {
-                    found.Inverse();
-                    CurrentTB.Selection = found;
-                    CurrentTB.DoSelectionVisible();
-                    return;
+                    foreach (var found in r.GetRanges(@"[{,]\s+" + '"' + @"[\w\d]+\" + '"' + @"\s+:"))
+                    {
+                        var userKey = found.GetRanges(pattern).ToArray()[0];
+                        userKey.Inverse();
+                        CurrentTB.Selection = userKey;
+                        CurrentTB.DoSelectionVisible();
+                        return;
+                    }
                 }
+                else
+                {
+                    foreach (var found in r.GetRanges(pattern))
+                    {
+                        found.Inverse();
+                        CurrentTB.Selection = found;
+                        CurrentTB.DoSelectionVisible();
+                        return;
+                    }
+                }
+
                 MessageBox.Show("Not found.");
             }
             else
