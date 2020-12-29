@@ -160,7 +160,7 @@ namespace JSON_Editor
             catch (Exception ex)
             {
                 if (MessageBox.Show(ex.Message, "Error", MessageBoxButtons.RetryCancel, 
-                    MessageBoxIcon.Error) == System.Windows.Forms.DialogResult.Retry)
+                    MessageBoxIcon.Error) == DialogResult.Retry)
                     CreateTab(fileName);
             }
         }
@@ -184,10 +184,49 @@ namespace JSON_Editor
         }
 
         void tb_KeyDown(object sender, KeyEventArgs e)
-        {      
+        {
+            e.Handled = true;
             if (e.KeyData == (Keys.Control | Keys.W))
             {
-
+                closeTAB(tsFiles.SelectedItem);
+            } 
+            else if (e.KeyData == (Keys.Control | Keys.Oemplus))
+            {
+                switch (CurrentTB.Zoom)
+                {
+                    case 25:
+                        CurrentTB.Zoom += 25;
+                        break;
+                    case 50:
+                    case 100:
+                    case 150:
+                        CurrentTB.Zoom += 50;
+                        break;
+                    case 200:
+                        CurrentTB.Zoom += 100;
+                        break;
+                }
+            } 
+            else if (e.KeyData == (Keys.Control | Keys.OemMinus))
+            {
+                switch (CurrentTB.Zoom)
+                {
+                    case 300:
+                        CurrentTB.Zoom -= 100;
+                        break;
+                    case 200:
+                    case 150:
+                    case 100:
+                        CurrentTB.Zoom -= 50;
+                        break;
+                    case 50:
+                        CurrentTB.Zoom -= 25;
+                        break;
+                }
+            } 
+            else
+            {
+                e.Handled = false;
             }
         }
 
@@ -397,6 +436,19 @@ namespace JSON_Editor
                 tbFindChanged = true;
         }
 
+        //return if Cancel was  selected
+        private bool closeTAB(FATabStripItem tab)
+        {
+            TabStripItemClosingEventArgs args = new TabStripItemClosingEventArgs(tab);
+            tsFiles_TabStripItemClosing(args);
+            if (args.Cancel)
+            {
+                return true;
+            }
+            tsFiles.RemoveTab(tab);
+            return false;
+        }
+
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             List<FATabStripItem> list = new List<FATabStripItem>();
@@ -404,14 +456,7 @@ namespace JSON_Editor
                 list.Add(tab);
             foreach (var tab in list)
             {
-                TabStripItemClosingEventArgs args = new TabStripItemClosingEventArgs(tab);
-                tsFiles_TabStripItemClosing(args);
-                if (args.Cancel)
-                {
-                    e.Cancel = true;
-                    return;
-                }
-                tsFiles.RemoveTab(tab);
+                e.Cancel = closeTAB(tab);
             }
         }
 
