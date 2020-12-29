@@ -79,7 +79,7 @@ namespace JSON_Editor
 
         private void TsbVerify_Click(object sender, EventArgs e)
         {
-            if (null == CurrentTB)
+            if (tsFiles.Items.Count == 0)
             {
                 MessageBox.Show(this, "File is not opened.", "File is not opened.",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -446,6 +446,10 @@ namespace JSON_Editor
                 return true;
             }
             tsFiles.RemoveTab(tab);
+            if (tsFiles.Items.Count == 0)
+            {
+                Focus();
+            }
             return false;
         }
 
