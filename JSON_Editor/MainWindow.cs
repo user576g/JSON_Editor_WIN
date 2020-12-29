@@ -243,8 +243,9 @@ namespace JSON_Editor
             ThreadPool.QueueUserWorkItem(
                 (o) =>
                 {
-                    LinesNumbersResult result = TextProcessor.CountLinesWords(text);
-                    lbStatusStrip.Text = $"Lines: { result.Lines}, Words: { result.Words }, "
+                    TextStatistics result = TextProcessor.CountTextStatistics(text);
+                    lbStatusStrip.Text = $"Lines: { result.Lines}, " +
+                    $"Total number of words: { result.Words }, Keys: {result.Keys}, "
                         + $"All symbols: { text.Length }";
                 }
             );

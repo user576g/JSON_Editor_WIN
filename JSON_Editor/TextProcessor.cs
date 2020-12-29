@@ -14,10 +14,12 @@ namespace JSON_Editor
         public bool IsValid;
     }
 
-    struct LinesNumbersResult
+    struct TextStatistics
     {
         public ulong Lines;
         public ulong Words;
+        public ulong Keys;
+        public ulong Values;
     }
 
     static class TextProcessor
@@ -241,16 +243,18 @@ namespace JSON_Editor
             return result;
         }
 
-        public static LinesNumbersResult CountLinesWords(string text)
+        public static TextStatistics CountTextStatistics(string text)
         {
             char[] separators = { ' ', ',', '.', '!', '?', ':', '{', '}',
-                                    ';', ')', '(', '[', ']', '\n', '\r'};
+                                    ';', ')', '(', '[', ']', '\n', '\r', '"'};
 
-            LinesNumbersResult result = new LinesNumbersResult();
+            TextStatistics result = new TextStatistics();
             result.Lines = 0;  result.Words = 0;
+            result.Keys = 0; result.Values = 0;
             bool wasChar = false;
 
-            foreach (char c in text) {
+            for (int i = 0; i < text.Length; ++i) {
+                char c = text[i];
                 if (System.Array.IndexOf(separators, c) == -1)
                 {
                     wasChar = true;
@@ -260,6 +264,17 @@ namespace JSON_Editor
                     if ('\n' == c)
                     {
                         ++result.Lines;
+                    } else if ('{' == c || ',' == c)
+                    {
+                        int temp = i;
+                        if (isSomethingLikeKey(ref temp, text))
+                        {
+                            ++temp;
+                            if (text.IndexOf('"', temp) != -1)
+                            {
+                                ++result.Keys;
+                            }
+                        }
                     }
 
                     if (wasChar)
