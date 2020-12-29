@@ -155,7 +155,6 @@ namespace JSON_Editor
                 AutocompleteMenu popupMenu = new AutocompleteMenu(tb);
                 popupMenu.Items.ImageList = ilAutocomplete;
                 popupMenu.Opening += new EventHandler<CancelEventArgs>(popupMenu_Opening);
-//                BuildAutocompleteMenu(popupMenu);
                 (tb.Tag as TbInfo).popupMenu = popupMenu;
             }
             catch (Exception ex)
@@ -186,11 +185,9 @@ namespace JSON_Editor
 
         void tb_KeyDown(object sender, KeyEventArgs e)
         {      
-            if (e.KeyData == (Keys.K | Keys.Control))
+            if (e.KeyData == (Keys.Control | Keys.W))
             {
-                //forced show (MinFragmentLength will be ignored)
-                (CurrentTB.Tag as TbInfo).popupMenu.Show(true);
-                e.Handled = true;
+
             }
         }
 
@@ -247,7 +244,7 @@ namespace JSON_Editor
                 switch(MessageBox.Show("Do you want save " + e.Item.Title + " ?", 
                     "Save", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information))
                 {
-                    case System.Windows.Forms.DialogResult.Yes:
+                    case DialogResult.Yes:
                         if (!Save(e.Item))
                             e.Cancel = true;
                         break;
@@ -263,7 +260,7 @@ namespace JSON_Editor
             var tb = (tab.Controls[0] as FastColoredTextBox);
             if (tab.Tag == null)
             {
-                if (sfdMain.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                if (sfdMain.ShowDialog() != DialogResult.OK)
                     return false;
                 tab.Title = Path.GetFileName(sfdMain.FileName);
                 tab.Tag = sfdMain.FileName;
@@ -423,106 +420,10 @@ namespace JSON_Editor
             if (CurrentTB != null)
             {
                 CurrentTB.Focus();
-                string text = CurrentTB.Text;
             }
         }
 
         DateTime lastNavigatedDateTime = DateTime.Now;
-
-        /// <summary>
-        /// This item appears when any part of snippet text is typed
-        /// </summary>
-        class DeclarationSnippet : SnippetAutocompleteItem
-        {
-            public DeclarationSnippet(string snippet)
-                : base(snippet)
-            {
-            }
-
-            public override CompareResult Compare(string fragmentText)
-            {
-                var pattern = Regex.Escape(fragmentText);
-                if (Regex.IsMatch(Text, "\\b" + pattern, RegexOptions.IgnoreCase))
-                    return CompareResult.Visible;
-                return CompareResult.Hidden;
-            }
-        }
-
-        /// <summary>
-        /// Divides numbers and words: "123AND456" -> "123 AND 456"
-        /// Or "i=2" -> "i = 2"
-        /// </summary>
-        class InsertSpaceSnippet : AutocompleteItem
-        {
-           string pattern;
-
-            public override CompareResult Compare(string fragmentText)
-            {
-                if (Regex.IsMatch(fragmentText, pattern))
-                {
-                    Text = InsertSpaces(fragmentText);
-                    if (Text != fragmentText)
-                        return CompareResult.Visible;
-                }
-                return CompareResult.Hidden;
-            }
-
-            public string InsertSpaces(string fragment)
-            {
-                var m = Regex.Match(fragment, pattern);
-                if (m == null)
-                    return fragment;
-                if (m.Groups[1].Value == "" && m.Groups[3].Value == "")
-                    return fragment;
-                return (m.Groups[1].Value + " " + m.Groups[2].Value + " " + m.Groups[3].Value).Trim();
-            }
-
-            public override string ToolTipTitle
-            {
-                get
-                {
-                    return Text;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Inerts line break after '}'
-        /// </summary>
-        class InsertEnterSnippet : AutocompleteItem
-        {
-            Place enterPlace = Place.Empty;
-
-            public InsertEnterSnippet()
-                : base("[Line break]")
-            {
-            }
-
-            public override CompareResult Compare(string fragmentText)
-            {
-                var r = Parent.Fragment.Clone();
-                while (r.Start.iChar > 0)
-                {
-                    if (r.CharBeforeStart == '}')
-                    {
-                        enterPlace = r.Start;
-                        return CompareResult.Visible;
-                    }
-
-                    r.GoLeftThroughFolded();
-                }
-
-                return CompareResult.Hidden;
-            }
-
-            public override string ToolTipTitle
-            {
-                get
-                {
-                    return "Insert line break after '}'";
-                }
-            }
-        }
 
         private void autoIndentSelectedTextToolStripMenuItem_Click(object sender, EventArgs e)
         {
