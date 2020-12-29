@@ -160,7 +160,8 @@ namespace JSON_Editor
             }
             catch (Exception ex)
             {
-                if (MessageBox.Show(ex.Message, "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == System.Windows.Forms.DialogResult.Retry)
+                if (MessageBox.Show(ex.Message, "Error", MessageBoxButtons.RetryCancel, 
+                    MessageBoxIcon.Error) == System.Windows.Forms.DialogResult.Retry)
                     CreateTab(fileName);
             }
         }
@@ -453,18 +454,7 @@ namespace JSON_Editor
         /// </summary>
         class InsertSpaceSnippet : AutocompleteItem
         {
-            string pattern;
-
-            public InsertSpaceSnippet(string pattern)
-                : base("")
-            {
-                this.pattern = pattern;
-            }
-
-            public InsertSpaceSnippet()
-                : this(@"^(\d+)([a-zA-Z_]+)(\d*)$")
-            {
-            }
+           string pattern;
 
             public override CompareResult Compare(string fragmentText)
             {
@@ -523,17 +513,6 @@ namespace JSON_Editor
                 }
 
                 return CompareResult.Hidden;
-            }
-
-            public override string GetTextForReplace()
-            {
-                //extend range
-                Range r = Parent.Fragment;
-                Place end = r.End;
-                r.Start = enterPlace;
-                r.End = r.End;
-                //insert line break
-                return Environment.NewLine + r.Text;
             }
 
             public override string ToolTipTitle
