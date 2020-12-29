@@ -26,6 +26,10 @@ namespace JSON_Editor
     {
         private static bool isSomethingLikeKey(ref int index, string text)
         {
+            if (text.Length - 2 < index)
+            {
+                return false;
+            }
             //check if there is anytihing 
             // anything like key
             char ch = '\0';
@@ -49,7 +53,9 @@ namespace JSON_Editor
                 {
                     return false;
                 }
-            } while (true);
+            } while (index < text.Length - 2);
+
+            return false;
         }
 
         public static ValidationResult isValidJson(string text)
@@ -243,6 +249,32 @@ namespace JSON_Editor
             return result;
         }
 
+        // returns position of non-white space symbol
+        private static int omitWhiteSpaces(int startPosition, string text)
+        {
+            int j = startPosition;
+            bool condition;
+            do
+            {
+                ++j;
+
+                condition = false;
+                try
+                {
+                    condition = ' ' == text[j] || '\r' == text[j] || '\n' == text[j];
+                } catch (IndexOutOfRangeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Everything is ok! " +
+                        "Just something went wrong while calculating statistics.");
+                    j = text.Length - 1;
+                }
+
+            } while ( condition && j < text.Length - 2);
+
+            return j;
+        }
+
         public static TextStatistics CountTextStatistics(string text)
         {
             char[] separators = { ' ', ',', '.', '!', '?', ':', '{', '}',
@@ -264,16 +296,66 @@ namespace JSON_Editor
                     if ('\n' == c)
                     {
                         ++result.Lines;
-                    } else if ('{' == c || ',' == c)
+                    } 
+                    else if ('{' == c || ',' == c)
                     {
                         int temp = i;
                         if (isSomethingLikeKey(ref temp, text))
                         {
-                            ++temp;
-                            if (text.IndexOf('"', temp) != -1)
+                            temp += 2;
+                            int endOfKeyPosition = text.IndexOf('"', temp);
+                            if (endOfKeyPosition != -1)
                             {
-                                ++result.Keys;
+                                int j = omitWhiteSpaces(endOfKeyPosition, text);
+                                if (':' == text[j])
+                                {
+                                    ++result.Keys;
+                                }
                             }
+                        } 
+                    }
+                    else if (':' == c)
+                    {
+                        int j = i;
+                        j = omitWhiteSpaces(j, text);
+                        c = text[j];
+
+                        if (('"' == c && text.IndexOf('"', j + 1) != -1)
+                            || ('{' == c && text.IndexOf('}', j + 1) != -1)
+                            || ('[' == c && text.IndexOf(']', j + 1) != -1))
+                        {
+                            ++result.Values;
+                        }
+                        else if (Char.IsDigit(c))
+                        {
+                            double dTemp;
+                            if (Double.TryParse(
+                                    text.Substring(j, text.IndexOf(' ', j) - j),
+                                     out dTemp))
+                            {
+                                ++result.Values;
+                            }
+                        }
+                        else
+                        {
+                            bool condition = false;
+                            try
+                            {
+                                condition = text.Substring(j, 4) == "null"
+                                    || text.Substring(j, 4) == "true"
+                                    || text.Substring(j, 5) == "false";
+                            } catch (ArgumentOutOfRangeException ex)
+                            {
+                                Console.WriteLine(
+                                    "Everything is okay! Just there is no value after :"
+                                    );
+                                Console.WriteLine(ex.Message);
+                            }
+                            if (condition)
+                            {
+                                ++result.Values;
+                            }
+                            
                         }
                     }
 

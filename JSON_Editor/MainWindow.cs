@@ -244,8 +244,8 @@ namespace JSON_Editor
                 (o) =>
                 {
                     TextStatistics result = TextProcessor.CountTextStatistics(text);
-                    lbStatusStrip.Text = $"Lines: { result.Lines}, " +
-                    $"Total number of words: { result.Words }, Keys: {result.Keys}, "
+                    lbStatusStrip.Text = $"Lines: { result.Lines}, Words: { result.Words }, "
+                        + $"Keys: {result.Keys}, Values: {result.Values}, "
                         + $"All symbols: { text.Length }";
                 }
             );
