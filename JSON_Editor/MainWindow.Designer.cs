@@ -370,13 +370,6 @@
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
             this.toolStripMenuItem4.Size = new System.Drawing.Size(215, 6);
             // 
-            // autoIndentSelectedTextToolStripMenuItem
-            // 
-            this.autoIndentSelectedTextToolStripMenuItem.Name = "autoIndentSelectedTextToolStripMenuItem";
-            this.autoIndentSelectedTextToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
-            this.autoIndentSelectedTextToolStripMenuItem.Text = "AutoIndent selected text";
-            this.autoIndentSelectedTextToolStripMenuItem.Click += new System.EventHandler(this.autoIndentSelectedTextToolStripMenuItem_Click);
-            // 
             // commentSelectedToolStripMenuItem
             // 
             this.commentSelectedToolStripMenuItem.Name = "commentSelectedToolStripMenuItem";

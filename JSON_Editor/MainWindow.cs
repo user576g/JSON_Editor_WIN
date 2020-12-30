@@ -163,6 +163,7 @@ namespace JSON_Editor
                 popupMenu.Items.ImageList = ilAutocomplete;
                 popupMenu.Opening += new EventHandler<CancelEventArgs>(popupMenu_Opening);
                 (tb.Tag as TbInfo).popupMenu = popupMenu;
+                tb.AutoIndent = false;
             }
             catch (Exception ex)
             {
@@ -495,11 +496,6 @@ namespace JSON_Editor
         }
 
         DateTime lastNavigatedDateTime = DateTime.Now;
-
-        private void autoIndentSelectedTextToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CurrentTB.DoAutoIndent();
-        }
 
         private void commentSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
