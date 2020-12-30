@@ -58,6 +58,46 @@ namespace JSON_Editor
             return false;
         }
 
+        // returns position of non-digit  symbol
+        private static int omitDigits(int startPosition, string text)
+        {
+            int j = startPosition;
+            bool condition;
+            do
+            {
+                ++j;
+
+                condition = false;
+                try
+                {
+                    condition = Char.IsDigit(text[j]) || '.' == text[j];
+                }
+                catch (IndexOutOfRangeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Everything is ok! " +
+                        "Just something went wrong while calculating statistics.");
+                    j = text.Length - 1;
+                }
+
+            } while (condition && j < text.Length - 2);
+
+            return j;
+        }
+
+
+        private static Stack<uint> _arrayElementsCounters = new Stack<uint>();
+
+        private static void increaseArrayElementsNumber()
+        {
+            if (0 < _arrayElementsCounters.Count)
+            {
+                _arrayElementsCounters.Push(
+                    _arrayElementsCounters.Pop() + 1
+                    );
+            }
+        }
+
         public static ValidationResult isValidJson(string text)
         {
             Stack<char> stack = new Stack<char>();
@@ -67,6 +107,7 @@ namespace JSON_Editor
             result.Row = 1; result.At = 1; result.IsValid = false;
 
             char last = '\0';
+            uint commaCount = 0;
 
             for (int i = 0; i < text.Length; ++i)
             {
@@ -86,17 +127,29 @@ namespace JSON_Editor
                         || text.Substring(i, 4) == "true")
                     {
                         i += 3;
+                        if (0 < stack.Count &&
+                                        stack.Peek() != '{' && stack.Peek() != ':')
+                            increaseArrayElementsNumber();
                         continue;
                     }
                     else if (text.Substring(i, 5) == "false")
                     {
                         i += 4;
+                        if (0 < stack.Count &&
+                                        stack.Peek() != '{' && stack.Peek() != ':')
+                            increaseArrayElementsNumber();
                         continue;
                     }
                     else
                     {
                         return result;
                     }
+                } else if (Char.IsDigit(ch) && 0 < _arrayElementsCounters.Count)
+                {
+                    i = omitDigits(i, text);
+                    if (0 < stack.Count &&
+                                        stack.Peek() != '{' && stack.Peek() != ':')
+                        increaseArrayElementsNumber();
                 }
 
                 switch (ch)
@@ -111,6 +164,9 @@ namespace JSON_Editor
                         {
                             // It's a closing quote
                             stack.Pop();
+                            if (0 < stack.Count &&
+                                        stack.Peek() != '{' && stack.Peek() != ':')
+                                increaseArrayElementsNumber();
                         }
                         else
                         {
@@ -193,6 +249,9 @@ namespace JSON_Editor
                         if (last == '{')
                         {
                             stack.Pop();
+                            if (0 < stack.Count &&
+                                        stack.Peek() != '{' && stack.Peek() != ':')
+                                increaseArrayElementsNumber();
                         }
                         else
                         {
@@ -203,6 +262,9 @@ namespace JSON_Editor
                                 if ('{' == last)
                                 {
                                     stack.Pop();
+                                    if (0 < stack.Count && 
+                                        stack.Peek() != '{' && stack.Peek() != ':')
+                                        increaseArrayElementsNumber();
                                 }
                                 else
                                 {
@@ -217,6 +279,7 @@ namespace JSON_Editor
                         break;
                     case '[':
                         stack.Push(ch);
+                        _arrayElementsCounters.Push(0);
                         break;
                     case ']':
                         if (stack.Count == 0)
@@ -224,14 +287,23 @@ namespace JSON_Editor
                             return result;
                         }
                         last = stack.Peek();
+                        commaCount = 0;
                         while (',' == last)
                         {
                             stack.Pop();
+                            ++commaCount;
                             last = stack.Peek();
                         }
                         if (last == '[')
                         {
                             stack.Pop();
+                            uint arrayElementsNumber
+                                = _arrayElementsCounters.Pop();
+                            if (0 < arrayElementsNumber 
+                                && arrayElementsNumber - 1 != commaCount)
+                            {
+                                return result;
+                            }
                         }
                         else
                         {
