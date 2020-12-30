@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using FarsiLibrary.Win;
 using FastColoredTextBoxNS;
 using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -16,8 +15,6 @@ namespace JSON_Editor
     public partial class MainWindow : Form
     {
         private Color changedLineColor = Color.FromArgb(255, 230, 230, 255);
-        private Image blankImg = Properties.Resources.blank_Image;
-        private Image checkImg = Properties.Resources.check_ico.ToBitmap();
 
         public MainWindow()
         {
@@ -79,9 +76,10 @@ namespace JSON_Editor
             replaceToolStripMenuItem.Click += (s, e) => CurrentTB.ShowReplaceDialog();
 
             tsBtnKeysOnly.CheckOnClick = true;
-            tsBtnKeysOnly.Image = blankImg;
+            tsBtnKeysOnly.Image = Program.blankImg;
             tsBtnKeysOnly.CheckedChanged += (s, e) =>
-                tsBtnKeysOnly.Image = tsBtnKeysOnly.Checked ? checkImg : blankImg;
+                tsBtnKeysOnly.Image 
+                    = tsBtnKeysOnly.Checked ? Program.checkImg : Program.blankImg;
         }
 
         private void TsbVerify_Click(object sender, EventArgs e)
@@ -97,31 +95,18 @@ namespace JSON_Editor
 
             if (string.IsNullOrEmpty(fileContent))
             {
-                MessageBox.Show(this, "File is empty.",  "File is empty.",
+                MessageBox.Show(this, "File is empty.", "File is empty.",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            var sb = new StringBuilder();
-            sb.Append("The file is ");
+
             ValidationResult result = TextProcessor.isValidJson(fileContent);
-            if (result.IsValid)
-            {
-                sb.Append("VALID ");
-            }
-            else
-            {
-                sb.Append("NOT valid ");
-            }
-            sb.Append("JSON file!");
-            if (!result.IsValid)
-            {
-                sb.Append("\nThe reason can be somewhere near line ")
-                    .Append(result.Row)
-                      .Append(", character ").Append(result.At);
-            }
             
-            MessageBox.Show(this, sb.ToString(), "Validation result",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var resultBox = new ValidationResultBox();
+            resultBox.SetResult(result);
+
+            resultBox.StartPosition = FormStartPosition.CenterParent;
+            resultBox.ShowDialog(this);
         }
 
         private Style sameWordsStyle 
