@@ -197,7 +197,9 @@ namespace JSON_Editor
             if (e.KeyData == (Keys.Control | Keys.W))
             {
                 closeTAB(tsFiles.SelectedItem);
-            } 
+            } else if (e.KeyData == (Keys.Control | Keys.V)) {
+                TsbVerify_Click(null, null);
+            }
             else if (e.KeyData == (Keys.Control | Keys.Oemplus))
             {
                 switch (CurrentTB.Zoom)

@@ -101,7 +101,8 @@ namespace JSON_Editor
         public static ValidationResult isValidJson(string text)
         {
             Stack<char> stack = new Stack<char>();
-            
+            _arrayElementsCounters = new Stack<uint>();
+
             ValidationResult result;
             //set initial values
             result.Row = 1; result.At = 1; result.IsValid = false;
