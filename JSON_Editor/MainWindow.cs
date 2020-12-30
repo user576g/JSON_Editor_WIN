@@ -80,6 +80,8 @@ namespace JSON_Editor
             tsBtnKeysOnly.CheckedChanged += (s, e) =>
                 tsBtnKeysOnly.Image 
                     = tsBtnKeysOnly.Checked ? Program.checkImg : Program.blankImg;
+
+            ofdMain.Multiselect = true;
         }
 
         private void TsbVerify_Click(object sender, EventArgs e)
@@ -341,9 +343,12 @@ namespace JSON_Editor
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (ofdMain.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (ofdMain.ShowDialog() == DialogResult.OK)
             {
-                CreateTab(ofdMain.FileName);
+                foreach (string file in ofdMain.FileNames)
+                {
+                    CreateTab(file);
+                }
             }
 
             lbStatusStrip.Text = "File is opened.";

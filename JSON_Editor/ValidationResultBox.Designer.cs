@@ -43,6 +43,7 @@
             // 
             // rtbResult
             // 
+            this.rtbResult.BackColor = System.Drawing.SystemColors.HighlightText;
             this.rtbResult.Location = new System.Drawing.Point(136, 38);
             this.rtbResult.Name = "rtbResult";
             this.rtbResult.ReadOnly = true;
